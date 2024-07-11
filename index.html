@@ -1,245 +1,221 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ar">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simple Translation Page</title>
-<style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
-    margin: 0;
-    padding: 0;
-  }
-  .container {
-    max-width: 800px;
-    margin: 50px auto;
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  h1 {
-    text-align: center;
-    color: #4CAF50;
-  }
-  input[type="text"] {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-  }
-  button {
-    padding: 10px 20px;
-    margin: 10px 5px 0 0;
-    border: none;
-    border-radius: 4px;
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
-    display: block;
-    width: 100%;
-    text-align: center;
-  }
-  button:hover {
-    background-color: #45a049;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  table, th, td {
-    border: 1px solid #ddd;
-  }
-  th, td {
-    padding: 12px;
-    text-align: left;
-  }
-  th {
-    background-color: #f2f2f2;
-  }
-  .footer {
-    text-align: center;
-    margin-top: 50px;
-    font-size: 1.2em;
-    color: #666;
-  }
-  @media print {
-    body * {
-      visibility: hidden;
-    }
-    #phraseTable, #phraseTable * {
-      visibility: visible;
-    }
-    #phraseTable {
-      position: absolute;
-      left: 0;
-      top: 0;
-    }
-  }
-</style>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>باحث اليوتيوب</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="container">
+    <h1>باحث اليوتيوب<span>برمجة حسين العرياني</span></h1>
 
-<div class="container">
-  <h1>English Phrases. 📟</h1>
-  <select id="languageSelect">
-    <option value="en-US">English</option>
-    <option value="ar-SA">Arabic</option>
-  </select>
-  <button id="recordButton">Record Voice 🎤</button>
-  <input type="text" id="englishInput" placeholder="Enter English Phrase">
-  <input type="text" id="translationInput" placeholder="Enter Translation">
-  <button onclick="addPhrase()">Add Phrase 📖</button>
-  <input type="text" id="filterInput" placeholder="Enter word to filter phrases" oninput="filterPhrases()">
-  <table id="phraseTable">
-    <tr>
-      <th>🗑</th>
-      <th>English Phrase</th>
-      <th>Translation</th>
-    </tr>
-  </table>
-  <button onclick="saveToXML()">Save Data ⤴️</button>
-  <button onclick="loadFromXML()">Load Data ↩️</button>
-  <button onclick="printData()">Print Data 🖨</button>
-</div>
+    <!-- التبويبات -->
+    <div class="tabs">
+      <div class="tab" onclick="setCategory('featured')">المحتوى المميز</div>
+      <div class="tab" onclick="setCategory('nature')">الطبيعة</div>
+      <div class="tab" onclick="setCategory('travel')">السياحة</div>
+      <div class="tab" onclick="setCategory('live cameras')">البث المباشر</div>
+      <div class="tab" onclick="setCategory('news')">الأخبار</div>
+      <div class="tab" onclick="setCategory('movies')">أفلام</div>
+    </div>
 
-<div class="footer">
-  Hussain Al-aryani’s programming 💽
-</div>
+    <div class="search-box">
+      <input type="text" class="search-bar" id="inputBox" placeholder="ابحث عن مقاطع الفيديو على YouTube">
+      <button class="search-btn" onclick="search()">🔎</button>
+    </div>
+    <div id="player-container">
+      <div id="player"></div>
+    </div>
+    <div id="videosResults"></div>
+  </div>
 
-<script>
-  function addPhrase() {
-    var englishPhrase = document.getElementById("englishInput").value;
-    var translation = document.getElementById("translationInput").value;
-    var table = document.getElementById("phraseTable");
-    var row = table.insertRow(-1);
-    var cell1 = row.insertCell(0);
-    var cell2 = row.insertCell(1);
-    var cell3 = row.insertCell(2);
-    cell1.innerHTML = '<button onclick="deleteRow(this)" style="background-color: #f44336; color: white; border: none; border-radius: 4px; padding: 5px 10px;">X</button>';
-    cell2.innerHTML = englishPhrase;
-    cell3.innerHTML = translation;
+  <!-- تضمين مكتبة YouTube Player API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 
-    // Clear input fields after adding phrase
-    document.getElementById("englishInput").value = "";
-    document.getElementById("translationInput").value = "";
-  }
+  <script>
+    // JavaScript للبحث عن نتائج YouTube بشكل عام بدون استخدام API
 
-  function saveToXML() {
-    var table = document.getElementById("phraseTable");
-    var data = "<phrases>";
-    for (var i = 1; i < table.rows.length; i++) {
-      var englishPhrase = table.rows[i].cells[1].innerHTML;
-      var translation = table.rows[i].cells[2].innerHTML;
-      data += "<phrase><english>" + englishPhrase + "</english><translation>" + translation + "</translation></phrase>";
+    // تعريف متغير عالمي للمشغل
+    var player;
+    var currentCategory = '';
+    var wakeLock = null;
+
+    // دالة لتحديد الفئة المختارة وتحديث نتائج البحث
+    function setCategory(category) {
+      currentCategory = category;
+      var tabs = document.querySelectorAll('.tab');
+      for (var i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove('active');
+      }
+      document.querySelector('.tab[onclick="setCategory(\'' + category + '\')"]').classList.add('active');
+      search();
     }
-    data += "</phrases>";
 
-    var xmlBlob = new Blob([data], {type: "application/xml"});
-    var url = URL.createObjectURL(xmlBlob);
+    // دالة لبدء تشغيل الفيديو في المشغل المضمن
+    function playVideo(videoId) {
+      if (player) {
+        player.loadVideoById(videoId);
+      } else {
+        player = new YT.Player('player', {
+          height: '180', // انخفاض ارتفاع المشغل ليكون أصغر
+          width: '320', // انخفاض عرض المشغل ليكون أصغر
+          videoId: videoId,
+          events: {
+            'onReady': onPlayerReady
+          }
+        });
+      }
+      // الانتقال إلى أعلى الصفحة لرؤية الفيديو
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      requestWakeLock(); // طلب إبقاء الشاشة مضاءة
+    }
 
-    var a = document.createElement("a");
-    a.href = url;
-    a.download = "data.xml";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
+    // دالة تشغيل الفيديو عندما يكون المشغل جاهزًا
+    function onPlayerReady(event) {
+      event.target.playVideo();
+    }
 
-  function loadFromXML() {
-    var input = document.createElement('input');
-    input.type = 'file';
+    // دالة البحث عن الفيديوهات على YouTube
+    function search() {
+      var input = document.getElementById('inputBox').value.trim();
+      if (input === '' && currentCategory === '') {
+        alert('يرجى إدخال مصطلح بحث صالح أو اختيار فئة.');
+        return;
+      }
 
-    input.onchange = function (e) {
-      var file = e.target.files[0];
-      var reader = new FileReader();
-      reader.readAsText(file, 'UTF-8');
-      reader.onload = function (readerEvent) {
-        var xmlString = readerEvent.target.result;
-        var parser = new DOMParser();
-        var xmlDoc = parser.parseFromString(xmlString, 'text/xml');
-        var phrases = xmlDoc.getElementsByTagName('phrase');
+      var apiKey = 'AIzaSyC4W3wiKWQ-BkRQPw13Yo0aoI9kQVr_s5Q'; // استبدال بمفتاح الواجهة البرمجية للتطبيق الخاص بك
+      var query = input;
 
-        for (var i = 0; i < phrases.length; i++) {
-          var englishPhrase = phrases[i].getElementsByTagName('english')[0].textContent;
-          var translation = phrases[i].getElementsByTagName('translation')[0].textContent;
+      if (currentCategory) {
+        var categoryQueries = {
+          'featured': 'nature documentaries',
+          'nature': 'nature',
+          'travel': 'travel Europe',
+          'live cameras': 'Live cameras',
+          'news': 'Arabic news',
+          'movies': 'Foreign movies'
+        };
+        query = categoryQueries[currentCategory] + (input ? ' ' + input : '');
+      }
 
-          var table = document.getElementById("phraseTable");
-          var row = table.insertRow(-1);
-          var cell1 = row.insertCell(0);
-          var cell2 = row.insertCell(1);
-          var cell3 = row.insertCell(2);
-          cell1.innerHTML = '<button onclick="deleteRow(this)" style="background-color: #f44336; color: white; border: none; border-radius: 4px; padding: 5px 10px;">X</button>';
-          cell2.innerHTML = englishPhrase;
-          cell3.innerHTML = translation;
+      var requestUrl = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' + encodeURIComponent(query) + '&maxResults=25&key=' + apiKey;
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', requestUrl, true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          var data = JSON.parse(xhr.responseText);
+          var videosResults = document.getElementById('videosResults');
+          videosResults.innerHTML = '';
+
+          for (var i = 0; i < data.items.length; i++) {
+            var item = data.items[i];
+            if (item.id.kind === 'youtube#video') {
+              var videoId = item.id.videoId;
+              var title = item.snippet.title;
+              var channelTitle = item.snippet.channelTitle;
+              var thumbnailUrl = item.snippet.thumbnails.medium.url;
+
+              var videoItem = document.createElement('div');
+              videoItem.classList.add('video-item');
+
+              var thumbnailImg = document.createElement('img');
+              thumbnailImg.classList.add('video-thumbnail');
+              thumbnailImg.src = thumbnailUrl;
+              thumbnailImg.alt = title;
+              // جعل الصورة تبدأ الفيديو عند النقر
+              thumbnailImg.onclick = (function(videoId) {
+                return function() {
+                  playVideo(videoId);
+                };
+              })(videoId);
+
+              // استخدام <span> بدلاً من <a> لعرض العنوان
+              var titleElem = document.createElement('span');
+              titleElem.classList.add('video-title');
+              titleElem.textContent = title;
+              titleElem.onclick = (function(videoId) {
+                return function() {
+                  playVideo(videoId);
+                };
+              })(videoId);
+
+              var channelElem = document.createElement('p');
+              channelElem.classList.add('channel-name');
+              channelElem.textContent = channelTitle;
+
+              var downloadBtn = document.createElement('a');
+              downloadBtn.classList.add('download-button');
+              downloadBtn.textContent = 'تحميل الفيديو';
+              var downloadUrl = 'https://www.ssyoutube.com/watch?v=' + videoId;
+              downloadBtn.href = downloadUrl;
+              downloadBtn.onclick = (function(downloadUrl) {
+                return function(event) {
+                  event.preventDefault();
+                  navigator.clipboard.writeText(downloadUrl).then(function() {
+                    window.location.href = downloadUrl;
+                  }, function(err) {
+                    console.error('فشل في نسخ الرابط:', err);
+                  });
+                };
+              })(downloadUrl);
+
+              // جعل العنصر بأكمله يبدأ الفيديو عند النقر
+              videoItem.onclick = (function(videoId) {
+                return function() {
+                  playVideo(videoId);
+                };
+              })(videoId);
+
+              videoItem.appendChild(thumbnailImg);
+              videoItem.appendChild(titleElem); // استخدام <span> بدلاً من <a>
+              videoItem.appendChild(channelElem);
+              videoItem.appendChild(downloadBtn);
+
+              videosResults.appendChild(videoItem);
+            }
+          }
+        } else if (xhr.readyState == 4) {
+          console.error('حدث خطأ أثناء جلب البيانات:', xhr.statusText);
+          alert('حدث خطأ أثناء جلب البيانات. يرجى المحاولة مرة أخرى لاحقًا.');
         }
       };
-    };
-    input.click();
-  }
-
-  function printData() {
-    window.print();
-  }
-
-  function deleteRow(btn) {
-    var row = btn.parentNode.parentNode;
-    row.parentNode.removeChild(row);
-  }
-
-  function filterPhrases() {
-    var filter = document.getElementById("filterInput").value.toLowerCase();
-    var table = document.getElementById("phraseTable");
-    var tr = table.getElementsByTagName("tr");
-
-    for (var i = 1; i < tr.length; i++) {
-      var td = tr[i].getElementsByTagName("td")[1];
-      if (td) {
-        var txtValue = td.textContent || td.innerText;
-        if (txtValue.toLowerCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-        } else {
-          tr[i].style.display = "none";
-        }
-      }       
+      xhr.send();
     }
-  }
 
-  // Adding voice recognition feature
-  const englishInput = document.getElementById('englishInput');
-  const translationInput = document.getElementById('translationInput');
-  const recordButton = document.getElementById('recordButton');
-  const languageSelect = document.getElementById('languageSelect');
+    // إضافة حدث keydown للبحث عند الضغط على Enter
+    document.getElementById('inputBox').addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        search();
+        event.target.blur(); // إخفاء لوحة المفاتيح بعد البحث
+      }
+    });
 
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recognition = new SpeechRecognition();
-
-  recognition.interimResults = false;
-
-  recordButton.addEventListener('click', () => {
-    recognition.lang = languageSelect.value;
-    recognition.start();
-  });
-
-  recognition.addEventListener('result', (event) => {
-    const transcript = event.results[0][0].transcript;
-    if (recognition.lang === 'en-US') {
-      englishInput.value = transcript;
-    } else if (recognition.lang === 'ar-SA') {
-      translationInput.value = transcript;
+    // دالة لطلب إبقاء الشاشة مضاءة
+    function requestWakeLock() {
+      if ('wakeLock' in navigator) {
+        navigator.wakeLock.request('screen').then(function(lock) {
+          wakeLock = lock;
+          console.log('Wake Lock is active.');
+        }).catch(function(err) {
+          console.error('Failed to acquire wake lock:', err);
+        });
+      }
     }
-  });
 
-  recognition.addEventListener('end', () => {
-    recognition.stop();
-  });
+    // دالة لإطلاق إبقاء الشاشة مضاءة
+    function releaseWakeLock() {
+      if (wakeLock) {
+        wakeLock.release().then(function() {
+          console.log('Wake Lock released.');
+          wakeLock = null;
+        });
+      }
+    }
 
-</script>
-
+    // إطلاق إبقاء الشاشة مضاءة عند إيقاف الفيديو
+    window.addEventListener('beforeunload', releaseWakeLock);
+  </script>
 </body>
 </html>
