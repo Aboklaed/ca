@@ -1,221 +1,132 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>باحث اليوتيوب</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مشاهدة القنوات</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Arabic', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eef2f5;
+            color: #333;
+        }
+
+        .container {
+            padding: 10px;
+            max-width: 1200px; /* تحديد الحد الأقصى للعرض */
+            margin: auto; /* جعل الحاوية في المنتصف */
+        }
+
+        .channel-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .channel-list li {
+            margin: 8px;
+        }
+
+        .channel-list a {
+            display: inline-block;
+            padding: 12px 20px;
+            text-decoration: none;
+            color: #5c67f2;
+            background-color: #eef2f5;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .channel-list a:hover {
+            background-color: #5c67f2;
+            color: #fff;
+        }
+
+        iframe {
+    height: 900px; /* يمكنك ضبط هذا الارتفاع حسب احتياجات شاشتك */
+    width: 600px;
+    margin: 10px auto;
+    display: block;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #5c67f2;
+            color: #fff;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .programmer {
+            font-size: 14px;
+        }
+
+        .loading-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 1000;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>باحث اليوتيوب<span>برمجة حسين العرياني</span></h1>
-
-    <!-- التبويبات -->
-    <div class="tabs">
-      <div class="tab" onclick="setCategory('featured')">المحتوى المميز</div>
-      <div class="tab" onclick="setCategory('nature')">الطبيعة</div>
-      <div class="tab" onclick="setCategory('travel')">السياحة</div>
-      <div class="tab" onclick="setCategory('live cameras')">البث المباشر</div>
-      <div class="tab" onclick="setCategory('news')">الأخبار</div>
-      <div class="tab" onclick="setCategory('movies')">أفلام</div>
+<div class="container">
+  <div class="fullscreen-iframe" id="videoFrame">
+        <iframe name="iframe" src="https://www.youtube.com/embed/moQtMet7F7w?si=xFITmG9neRW3vOTy" allowfullscreen></iframe>
     </div>
+    <ul class="channel-list">
+        <li><a href="https://www.youtube.com/embed/Kt7hKHlArl8?si=e33BL-LS6qGdoN1H" target="iframe" onclick="changeIframeSrc(event)">السنة</a></li>
+        <li><a href="https://www.youtube.com/embed/bNyUyrR0PHo?si=WDZxmrSVYJd5DXVG" target="iframe" onclick="scrollToIframe(event)">الجزيرة</a></li>
+        <li><a href="https://www.youtube.com/embed/me1fBxx9wJY?si=cCw5mUQgYPhJy1ha" target="iframe" onclick="scrollToIframe(event)">اسكاي نيوز</a></li>
+        <li><a href="https://www.youtube.com/embed/bCgJhh5qoog?si=glQHR7vFelWH09FJ" target="iframe" onclick="scrollToIframe(event)">العربية</a></li>
+        <li><a href="https://www.youtube.com/embed/et0bSUddkn4?si=GH4sNzZEQSdun6IO" target="iframe" onclick="scrollToIframe(event)">الحدث</a></li>
+        <li><a href="https://www.youtube.com/embed/aNNgFPvgAfU?si=7JY_l3POSIpkDKHk" target="iframe" onclick="scrollToIframe(event)">TRT عربي</a></li>
+        <li><a href="https://www.youtube.com/embed/lig945CnE2U?si=Om9rNGFDjwLgSUMO" target="iframe" onclick="scrollToIframe(event)">المجد</a></li>
+        <li><a href="https://www.youtube.com/embed/VuYzy8IuT0Y?si=xmc9veP25-7AAg5F" target="iframe" onclick="scrollToIframe(event)">24 فرنس</a></li>
+        <li><a href="https://www.youtube.com/embed/TiPYdMXt_XI?si=ccFkEZquFFB1Gx1a" target="iframe" onclick="scrollToIframe(event)">الجزيرة الوثائقية</a></li>
+        <li><a href="https://www.youtube.com/embed/FlzMedKfQOs?si=2zQPprdec0cxiBhp&amp;controls=0" target="iframe" onclick="scrollToIframe(event)">لشرق الوثائقية</a></li>
+        <li><a href="https://www.youtube.com/embed/BJ3Yv572V1A?si=-DHVI1NbLFCM6fao" target="iframe" onclick="scrollToIframe(event)">ناشيونال جيوغرافيك</a></li>
+        <li><a href="https://www.youtube.com/embed/mVhb_Qnc1ME?si=rCU_KDBuVnG0JSKA" target="iframe" onclick="scrollToIframe(event)">DW</a></li>
+        <li><a href="https://www.youtube.com/embed/mn4DlkkqfAo?si=tzzRWYTawF4Ssgi8" target="iframe" onclick="scrollToIframe(event)">الإخبارية السعودية</a></li>
+        <li><a href="https://www.youtube.com/embed/YDIcwHOkaqI?si=xGA1dp6Sm" target="iframe" onclick="scrollToIframe(event)">بالقيس</a></li>
+        <li><a href="https://www.youtube.com/embed/tpcErT45oJU?si=kJKvtpxhSw6GQrb4" target="iframe" onclick="scrollToIframe(event)">الحرة العراقية</a></li>
+        <li><a href="https://www.youtube.com/embed/e2RgSa1Wt5o?si=K7LBE9boN6GWULv0" target="iframe" onclick="scrollToIframe(event)">العربي</a></li>
+        <li><a href="https://arabic.rt.com/live/rt-player" target="iframe" onclick="scrollToIframe(event)">روسيا اليوم</a></li>
+        <li><a href="https://www.youtube.com/embed/DJNMUOi4DpI?si=VENhcluh5ZriuhEL" target="iframe" onclick="scrollToIframe(event)">طبيعة مباشر</a></li>
+        <li><a href="https://www.youtube.com/embed/UV0mhY2Dxr0?si=QPanVcdmlP2ib99X" target="iframe" onclick="scrollToIframe(event)">طبيعة مباشر</a></li>
+        <li><a href="https://www.youtube.com/embed/0fnkA5YEglU?si=6aDVDrU-KuQSIy1P" target="iframe" onclick="scrollToIframe(event)">مذكرة مسافر</a></li>
+        <li><a href="https://www.youtube.com/embed/BqysbaH4pxI?si=tdGa7kZj2RaWb4cq" target="iframe" onclick="scrollToIframe(event)">مذكرة مسافر</a></li>
+        <li><a href="https://www.youtube.com/embed/-SMKVJO_wGo?si=WCGCPRbEuwsxlfbi" target="iframe" onclick="scrollToIframe(event)">جزر لوفوتن النروج</a></li>
+        <li><a href="https://www.youtube.com/embed/AQM-jqHBrM8?si=AN3ug2Dxn708lnpi" target="iframe" onclick="scrollToIframe(event)">طبيعة</a></li>
+        <li><a href="https://www.youtube.com/embed/ar1CB-kbMMA?si=hxP24Lm-fXdj8sPk" target="iframe" onclick="changeIframeSrc(event)">لوتربرونن، سويسرا</a></li>
+    </ul>
+</div>
 
-    <div class="search-box">
-      <input type="text" class="search-bar" id="inputBox" placeholder="ابحث عن مقاطع الفيديو على YouTube">
-      <button class="search-btn" onclick="search()">🔎</button>
-    </div>
-    <div id="player-container">
-      <div id="player"></div>
-    </div>
-    <div id="videosResults"></div>
-  </div>
-
-  <!-- تضمين مكتبة YouTube Player API -->
-  <script src="https://www.youtube.com/iframe_api"></script>
-
-  <script>
-    // JavaScript للبحث عن نتائج YouTube بشكل عام بدون استخدام API
-
-    // تعريف متغير عالمي للمشغل
-    var player;
-    var currentCategory = '';
-    var wakeLock = null;
-
-    // دالة لتحديد الفئة المختارة وتحديث نتائج البحث
-    function setCategory(category) {
-      currentCategory = category;
-      var tabs = document.querySelectorAll('.tab');
-      for (var i = 0; i < tabs.length; i++) {
-        tabs[i].classList.remove('active');
-      }
-      document.querySelector('.tab[onclick="setCategory(\'' + category + '\')"]').classList.add('active');
-      search();
+<script>
+    function changeIframeSrc(event) {
+        event.preventDefault();
+        document.querySelector('iframe[name="iframe"]').src = event.target.href;
     }
+</script>
 
-    // دالة لبدء تشغيل الفيديو في المشغل المضمن
-    function playVideo(videoId) {
-      if (player) {
-        player.loadVideoById(videoId);
-      } else {
-        player = new YT.Player('player', {
-          height: '180', // انخفاض ارتفاع المشغل ليكون أصغر
-          width: '320', // انخفاض عرض المشغل ليكون أصغر
-          videoId: videoId,
-          events: {
-            'onReady': onPlayerReady
-          }
-        });
-      }
-      // الانتقال إلى أعلى الصفحة لرؤية الفيديو
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      requestWakeLock(); // طلب إبقاء الشاشة مضاءة
-    }
-
-    // دالة تشغيل الفيديو عندما يكون المشغل جاهزًا
-    function onPlayerReady(event) {
-      event.target.playVideo();
-    }
-
-    // دالة البحث عن الفيديوهات على YouTube
-    function search() {
-      var input = document.getElementById('inputBox').value.trim();
-      if (input === '' && currentCategory === '') {
-        alert('يرجى إدخال مصطلح بحث صالح أو اختيار فئة.');
-        return;
-      }
-
-      var apiKey = 'AIzaSyC4W3wiKWQ-BkRQPw13Yo0aoI9kQVr_s5Q'; // استبدال بمفتاح الواجهة البرمجية للتطبيق الخاص بك
-      var query = input;
-
-      if (currentCategory) {
-        var categoryQueries = {
-          'featured': 'nature documentaries',
-          'nature': 'nature',
-          'travel': 'travel Europe',
-          'live cameras': 'Live cameras',
-          'news': 'Arabic news',
-          'movies': 'Foreign movies'
-        };
-        query = categoryQueries[currentCategory] + (input ? ' ' + input : '');
-      }
-
-      var requestUrl = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=' + encodeURIComponent(query) + '&maxResults=25&key=' + apiKey;
-
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', requestUrl, true);
-      xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-          var data = JSON.parse(xhr.responseText);
-          var videosResults = document.getElementById('videosResults');
-          videosResults.innerHTML = '';
-
-          for (var i = 0; i < data.items.length; i++) {
-            var item = data.items[i];
-            if (item.id.kind === 'youtube#video') {
-              var videoId = item.id.videoId;
-              var title = item.snippet.title;
-              var channelTitle = item.snippet.channelTitle;
-              var thumbnailUrl = item.snippet.thumbnails.medium.url;
-
-              var videoItem = document.createElement('div');
-              videoItem.classList.add('video-item');
-
-              var thumbnailImg = document.createElement('img');
-              thumbnailImg.classList.add('video-thumbnail');
-              thumbnailImg.src = thumbnailUrl;
-              thumbnailImg.alt = title;
-              // جعل الصورة تبدأ الفيديو عند النقر
-              thumbnailImg.onclick = (function(videoId) {
-                return function() {
-                  playVideo(videoId);
-                };
-              })(videoId);
-
-              // استخدام <span> بدلاً من <a> لعرض العنوان
-              var titleElem = document.createElement('span');
-              titleElem.classList.add('video-title');
-              titleElem.textContent = title;
-              titleElem.onclick = (function(videoId) {
-                return function() {
-                  playVideo(videoId);
-                };
-              })(videoId);
-
-              var channelElem = document.createElement('p');
-              channelElem.classList.add('channel-name');
-              channelElem.textContent = channelTitle;
-
-              var downloadBtn = document.createElement('a');
-              downloadBtn.classList.add('download-button');
-              downloadBtn.textContent = 'تحميل الفيديو';
-              var downloadUrl = 'https://www.ssyoutube.com/watch?v=' + videoId;
-              downloadBtn.href = downloadUrl;
-              downloadBtn.onclick = (function(downloadUrl) {
-                return function(event) {
-                  event.preventDefault();
-                  navigator.clipboard.writeText(downloadUrl).then(function() {
-                    window.location.href = downloadUrl;
-                  }, function(err) {
-                    console.error('فشل في نسخ الرابط:', err);
-                  });
-                };
-              })(downloadUrl);
-
-              // جعل العنصر بأكمله يبدأ الفيديو عند النقر
-              videoItem.onclick = (function(videoId) {
-                return function() {
-                  playVideo(videoId);
-                };
-              })(videoId);
-
-              videoItem.appendChild(thumbnailImg);
-              videoItem.appendChild(titleElem); // استخدام <span> بدلاً من <a>
-              videoItem.appendChild(channelElem);
-              videoItem.appendChild(downloadBtn);
-
-              videosResults.appendChild(videoItem);
-            }
-          }
-        } else if (xhr.readyState == 4) {
-          console.error('حدث خطأ أثناء جلب البيانات:', xhr.statusText);
-          alert('حدث خطأ أثناء جلب البيانات. يرجى المحاولة مرة أخرى لاحقًا.');
-        }
-      };
-      xhr.send();
-    }
-
-    // إضافة حدث keydown للبحث عند الضغط على Enter
-    document.getElementById('inputBox').addEventListener('keydown', function(event) {
-      if (event.key === 'Enter') {
-        search();
-        event.target.blur(); // إخفاء لوحة المفاتيح بعد البحث
-      }
-    });
-
-    // دالة لطلب إبقاء الشاشة مضاءة
-    function requestWakeLock() {
-      if ('wakeLock' in navigator) {
-        navigator.wakeLock.request('screen').then(function(lock) {
-          wakeLock = lock;
-          console.log('Wake Lock is active.');
-        }).catch(function(err) {
-          console.error('Failed to acquire wake lock:', err);
-        });
-      }
-    }
-
-    // دالة لإطلاق إبقاء الشاشة مضاءة
-    function releaseWakeLock() {
-      if (wakeLock) {
-        wakeLock.release().then(function() {
-          console.log('Wake Lock released.');
-          wakeLock = null;
-        });
-      }
-    }
-
-    // إطلاق إبقاء الشاشة مضاءة عند إيقاف الفيديو
-    window.addEventListener('beforeunload', releaseWakeLock);
-  </script>
 </body>
 </html>
